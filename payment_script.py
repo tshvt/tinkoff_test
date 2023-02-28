@@ -21,9 +21,9 @@ def get_token(**kwargs):
     return sha256(string_for_hash.encode('utf-8')).hexdigest()
 
 
-URL = "https://securepay.tinkoff.ru/v2/"
+URL = "https://securepay.tinkoff.ru/v2"
 TERMINAL_KEY = "TinkoffBankTest"
-ORDER_ID = "1000980001008"
+ORDER_ID = "10009760001002"
 
 
 def init_payment(amount):
@@ -36,7 +36,7 @@ def init_payment(amount):
     }
 
     # Инициируем платеж
-    initiate_payment = requests.post(f"{URL}Init", json=init_json)
+    initiate_payment = requests.post(f"{URL}/Init", json=init_json)
     init_data = initiate_payment.json()
 
     # Проверка на ошибку запроса
@@ -55,7 +55,7 @@ def cancel_payment(payment_id):
         "Token": get_token(TerminalKey=TERMINAL_KEY, PaymentId=payment_id)
     }
 
-    cancel_payment = requests.post(f"{URL}Cancel", json=cancel_json)
+    cancel_payment = requests.post(f"{URL}/Cancel", json=cancel_json)
     cancel_data = cancel_payment.json()
 
     # Проверка на ошибку запроса
@@ -70,7 +70,7 @@ def cancel_payment(payment_id):
 def get_payment_status(payment_id):
     """Получение статуса платежа"""
     payment_status_after_init = requests.post(
-        f"{URL}GetState", json={
+        f"{URL}/GetState", json={
             "TerminalKey": TERMINAL_KEY,
             "PaymentId": payment_id,
             "Token": get_token(TerminalKey=TERMINAL_KEY, PaymentId=payment_id)
@@ -80,7 +80,7 @@ def get_payment_status(payment_id):
     print(f"Payment status: {payment_status_after_init.json()['Status']}")
 
 
-# # Инициация платежа
+# Инициация платежа
 init_data = init_payment(100000)
 payment_id = init_data["PaymentId"]
 
@@ -92,7 +92,7 @@ payment_url = init_data['PaymentURL']
 print(payment_url)
 
 # Время на оплату
-time.sleep(240)
+time.sleep(120)
 # Статус платежа после оплаты
 get_payment_status(payment_id)
 

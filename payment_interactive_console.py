@@ -8,7 +8,7 @@ from hashlib import sha256
 
 
 class Payment:
-    URL = "https://securepay.tinkoff.ru/v2/"
+    URL = "https://securepay.tinkoff.ru/v2"
     TERMINAL_KEY = "TinkoffBankTest"
 
     def __init__(self, amount, order_id):
@@ -40,7 +40,7 @@ class Payment:
         }
 
         # Инициируем платеж
-        initiate_payment = requests.post(f"{self.URL}Init", json=init_json)
+        initiate_payment = requests.post(f"{self.URL}/Init", json=init_json)
         init_data = initiate_payment.json()
 
         # Проверка на ошибку запроса
@@ -60,7 +60,7 @@ class Payment:
             "Token": self.get_token(TerminalKey=self.TERMINAL_KEY, PaymentId=self.payment_id)
         }
 
-        cancel_payment = requests.post(f"{self.URL}Cancel", json=cancel_json)
+        cancel_payment = requests.post(f"{self.URL}/Cancel", json=cancel_json)
         cancel_data = cancel_payment.json()
 
         # Проверка на ошибку запроса
@@ -73,7 +73,7 @@ class Payment:
 
     def get_payment_status(self):
         payment_status_after_init = requests.post(
-            f"{self.URL}GetState", json={
+            f"{self.URL}/GetState", json={
                 "TerminalKey": self.TERMINAL_KEY,
                 "PaymentId": self.payment_id,
                 "Token": self.get_token(TerminalKey=self.TERMINAL_KEY, PaymentId=self.payment_id)
@@ -96,9 +96,10 @@ while True:
         check_again = True
         while check_again:
             check = input("Check status again? Type 'yes' or 'no'\n")
-            if check.lower() == 'no':
+            if check.lower() == 'yes':
+                new_payment.get_payment_status()
+            else:
                 check_again = False
-            new_payment.get_payment_status()
         user_input = input("To cancel payment enter 'cancel'\nTo initiate new payment enter 'new'\n")
         if user_input.lower() == "cancel":
             new_payment.cancel_payment()
