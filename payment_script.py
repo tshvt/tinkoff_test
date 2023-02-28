@@ -68,7 +68,7 @@ def cancel_payment(payment_id):
 
 
 def get_payment_status(payment_id):
-    """Получение статуса платежа после инициации"""
+    """Получение статуса платежа"""
     payment_status_after_init = requests.post(
         f"{URL}GetState", json={
             "TerminalKey": TERMINAL_KEY,
